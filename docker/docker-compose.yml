@@ -1,0 +1,60 @@
+---
+version: '3.8'
+
+services:
+  db-test:
+    image: postgres:14.5
+    container_name: btw-postgres-line-provider-test
+    ports:
+      - "5440:5432"
+    environment:
+      POSTGRES_USER: betwise-test
+      POSTGRES_PASSWORD: betwise-test
+      POSTGRES_DB: betwise-test
+    tty: true
+    networks:
+      - btw-dev-network
+  db-local:
+    image: postgres:14.5
+    container_name: btw-postgres-line-provider
+    ports:
+      - "5441:5432"
+    environment:
+      POSTGRES_USER: betwise
+      POSTGRES_PASSWORD: betwise
+      POSTGRES_DB: betwise
+    volumes:
+      - pgdata_line_provide:/var/lib/postgresql/data
+    tty: true
+    networks:
+      - btw-dev-network
+  line-provider:
+    container_name: btw-line-provider
+    platform: linux/x86_64
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.dev
+    restart: always
+    volumes:
+      - ../src:/src
+      - ../opt:/opt
+    ports:
+      - "8061:8000"
+    environment:
+      - API_ENVIRONMENT=local
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8000/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - btw-dev-network
+    tty: true
+    depends_on:
+      - db-test
+      - db-local
+networks:
+  btw-dev-network:
+    external: true
+volumes:
+  pgdata_line_provide:
