@@ -16,12 +16,13 @@ async def get_events(
     request: Request,
     page: int = 1,
     limit: int = 50,
+    only_active: bool = True,
     sort_by: EventSorting = EventSorting.BY_CREATION_DATE.value,
     order_by: Ordering = Ordering.ASC.value,
     status_filter: EventStatus = None,
     list_events_use_case: ListEventsUseCase = Depends(get_list_events_use_case),
 ):
-    events, count = await list_events_use_case(page, limit, sort_by, order_by, status=status_filter)
+    events, count = await list_events_use_case(page, limit, sort_by, order_by, only_active, status=status_filter)
     return HateoasModel(
         items=[EventItem.from_entity(event) for event in events],
         limit=limit,

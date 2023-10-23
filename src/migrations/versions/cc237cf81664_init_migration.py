@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("SCHEDULED", "PENDING", "RIGHT_VICTORY", "LEFT_VICTORY", name="eventstatus"),
+            sa.Enum("SCHEDULED", "RIGHT_VICTORY", "LEFT_VICTORY", name="eventstatus"),
             nullable=False,
         ),
         sa.Column("status_updated_at", sa.DateTime(timezone=True), nullable=True),

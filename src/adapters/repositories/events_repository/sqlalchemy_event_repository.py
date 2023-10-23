@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Unpack
 
 from sqlalchemy import desc, func, select
@@ -65,11 +66,15 @@ class SQLAlchemyEventRepository(EventRepository):
         limit: int = 50,
         sort_by: EventSorting = EventSorting.BY_CREATION_DATE,
         order_by: Ordering = Ordering.ASC,
+        only_active: bool = True,
         **filters: Unpack[EventFilters],
     ) -> list[Event]:
         offset = (page - 1) * limit
         filter_expressions = self.__get_filter_expression(EventsORM, filters)
         order_expression = self.__get_order_expression(order_by, sort_by)
+        if only_active:
+            expiration_filter = EventsORM.expiration_at >= datetime.now()
+            filter_expressions.append(expiration_filter)
         try:
             query = select(EventsORM).where(*filter_expressions).offset(offset).limit(limit).order_by(order_expression)
             result = await self.db.execute(query)
@@ -78,8 +83,11 @@ class SQLAlchemyEventRepository(EventRepository):
             logger.error(e)
             raise DatabaseException
 
-    async def count(self, **filters: Unpack[EventFilters]) -> int:
+    async def count(self, only_active: bool = True, **filters: Unpack[EventFilters]) -> int:
         filter_expressions = self.__get_filter_expression(EventsORM, filters)
+        if only_active:
+            expiration_filter = EventsORM.expiration_at <= datetime.now()
+            filter_expressions.append(expiration_filter)
         try:
             query = select(func.count("*")).select_from(EventsORM).where(*filter_expressions)
             result = await self.db.execute(query)
