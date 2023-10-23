@@ -46,3 +46,7 @@ class EventItem(BaseModel):
             status_updated_at=event.status_updated_at,
             expiration_at=event.expiration_at,
         )
+
+
+class EventPatch(BaseModel):
+    status: EventStatus
