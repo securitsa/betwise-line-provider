@@ -1,11 +1,11 @@
 create-migrations:
-	docker-compose -f docker/docker-compose.yml run betwise-line-provider alembic revision --autogenerate -m "$(m)"
+	docker-compose -f docker/docker-compose.yml run line-provider alembic revision --autogenerate -m "$(m)"
 
 migrations-upgrade:
-	docker-compose -f docker/docker-compose.yml run betwise-line-provider alembic upgrade head
+	docker-compose -f docker/docker-compose.yml run line-provider alembic upgrade head
 
 migrations-downgrade:
-	docker-compose -f docker/docker-compose.yml run betwise-line-provider alembic downgrade -1
+	docker-compose -f docker/docker-compose.yml run line-provider alembic downgrade -1
 
 up:
 	docker-compose -f docker/docker-compose.yml up
