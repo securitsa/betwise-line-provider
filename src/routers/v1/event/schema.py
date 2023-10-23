@@ -18,7 +18,7 @@ class EventInput(BaseModel):
             name=self.name,
             description=self.description,
             coefficient=self.coefficient,
-            expiration_at=datetime.now() + self.timedelta,
+            expiration_at=datetime.now() + self.timeline,
         )
 
 
@@ -44,4 +44,5 @@ class EventItem(BaseModel):
             created_at=event.created_at,
             description=event.description,
             status_updated_at=event.status_updated_at,
+            expiration_at=event.expiration_at,
         )
