@@ -31,6 +31,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("status_updated_at", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("expiration_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("token"),
     )
     op.create_index(

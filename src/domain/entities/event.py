@@ -16,7 +16,8 @@ class Event:
     administrator_token: str
     name: str
     coefficient: float
-    status: EventStatus
+    expiration_at: datetime
+    status: EventStatus | None = None
     token: UUID | None = None
     description: str | None = None
     created_at: datetime | None = field(default=None, compare=False)
