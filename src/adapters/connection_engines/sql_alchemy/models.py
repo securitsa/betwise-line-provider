@@ -26,3 +26,4 @@ class EventsORM(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=sa.func.now())
     status: Mapped[EventStatus]
     status_updated_at: Mapped[datetime | None]
+    expiration_at: Mapped[datetime]
