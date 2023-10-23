@@ -23,7 +23,9 @@ class BaseAppSettings(BaseSettings):
     db_username: str = Field("betwise", validation_alias="DATABASE_USERNAME")
     db_password: SecretStr = Field("betwise", validation_alias="DATABASE_PASSWORD")
     db_database: str = Field("betwise", validation_alias="DATABASE_NAME")
-    valid_jwt_secret: str = Field("jwt_secret_key", validation_alias="JWT_SECRET_KEY")
+    celery_broker_url: str = Field("redis://redis:6379/0", env="CELERY_BROKER_URL")
+    celery_backend_url: str = Field("redis://redis:6379/0", env="CELERY_BACKEND_URL")
+    celery_imports: tuple = Field(("tasks",), env="CELERY_IMPORTS")
 
     @field_validator("db_password")
     @classmethod
