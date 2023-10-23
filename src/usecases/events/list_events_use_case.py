@@ -15,8 +15,9 @@ class ListEventsUseCase:
         limit: int = 50,
         sort_by: EventSorting = EventSorting.BY_CREATION_DATE.value,
         order_by: Ordering = Ordering.ASC.value,
+        only_active: bool = True,
         **filters: Unpack[EventFilters],
     ) -> (list[Event], int):
-        events = await self.event_repository.list(page, limit, sort_by, order_by, **filters)
-        count = await self.event_repository.count(**filters)
+        events = await self.event_repository.list(page, limit, sort_by, order_by, only_active, **filters)
+        count = await self.event_repository.count(only_active, **filters)
         return events, count

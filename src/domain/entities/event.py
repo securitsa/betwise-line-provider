@@ -6,7 +6,6 @@ from uuid import UUID
 
 class EventStatus(StrEnum):
     SCHEDULED = "scheduled"
-    PENDING = "pending"
     RIGHT_VICTORY = "right_victory"
     LEFT_VICTORY = "left_victory"
 
