@@ -86,7 +86,7 @@ class SQLAlchemyEventRepository(EventRepository):
     async def count(self, only_active: bool = True, **filters: Unpack[EventFilters]) -> int:
         filter_expressions = self.__get_filter_expression(EventsORM, filters)
         if only_active:
-            expiration_filter = EventsORM.expiration_at <= datetime.now()
+            expiration_filter = EventsORM.expiration_at >= datetime.now()
             filter_expressions.append(expiration_filter)
         try:
             query = select(func.count("*")).select_from(EventsORM).where(*filter_expressions)

@@ -24,6 +24,14 @@ class BaseAppSettings(BaseSettings):
     db_password: SecretStr = Field("betwise", validation_alias="DATABASE_PASSWORD")
     db_database: str = Field("betwise", validation_alias="DATABASE_NAME")
     valid_jwt_secret: str = Field("jwt_secret_key", validation_alias="JWT_SECRET_KEY")
+    events_queue: str = "events-queue-dev"
+    test_sqs_config: dict = {
+        "endpoint_url": "http://sqs:9324",
+        "region_name": "elasticmq",
+        "aws_secret_access_key": "x",
+        "aws_access_key_id": "x",
+        "use_ssl": False,
+    }
 
     @field_validator("db_password")
     @classmethod
@@ -67,3 +75,4 @@ class DevelopmentSettings(BaseAppSettings):
 
 class ProductionSettings(BaseAppSettings):
     debug: bool = False
+    events_queue: str = "events-queue"

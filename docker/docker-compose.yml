@@ -2,7 +2,7 @@
 version: '3.8'
 
 services:
-  db-test:
+  line-provider-db-test:
     image: postgres:14.5
     container_name: btw-postgres-line-provider-test
     ports:
@@ -14,7 +14,7 @@ services:
     tty: true
     networks:
       - btw-dev-network
-  db-local:
+  line-provider-db-local:
     image: postgres:14.5
     container_name: btw-postgres-line-provider
     ports:
@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: betwise
       POSTGRES_DB: betwise
     volumes:
-      - pgdata_line_provide:/var/lib/postgresql/data
+      - pgdata_line_provider:/var/lib/postgresql/line-provider-data
     tty: true
     networks:
       - btw-dev-network
@@ -51,10 +51,10 @@ services:
       - btw-dev-network
     tty: true
     depends_on:
-      - db-test
-      - db-local
+      - line-provider-db-test
+      - line-provider-db-local
 networks:
   btw-dev-network:
     external: true
 volumes:
-  pgdata_line_provide:
+  pgdata_line_provider:
