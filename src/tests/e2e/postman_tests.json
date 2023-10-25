@@ -1698,7 +1698,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/v1/events?page=2&limit=1",
+							"raw": "{{api_url}}/v1/events?page=1&limit=1",
 							"host": [
 								"{{api_url}}"
 							],
