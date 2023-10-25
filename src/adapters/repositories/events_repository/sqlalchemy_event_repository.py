@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Unpack
 
-from sqlalchemy import desc, func, select
+from sqlalchemy import and_, desc, func, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from adapters.connection_engines.sql_alchemy.models import EventsORM
@@ -10,7 +10,7 @@ from adapters.repositories.events_repository.sqlalchemy_event_repository_mapper 
 from core.exceptions.event_exceptions import EventNotFoundException
 from core.exceptions.external_exceptions import DatabaseException
 from core.loggers import REPOSITORY_LOGGER
-from domain.entities.event import Event
+from domain.entities.event import Event, EventStatus
 from ports.repositories.event_repository import EventRepository
 from usecases.enum_models import EventFilters, EventSorting, Ordering
 
@@ -73,7 +73,9 @@ class SQLAlchemyEventRepository(EventRepository):
         filter_expressions = self.__get_filter_expression(EventsORM, filters)
         order_expression = self.__get_order_expression(order_by, sort_by)
         if only_active:
-            expiration_filter = EventsORM.expiration_at >= datetime.now()
+            expiration_filter = and_(
+                EventsORM.expiration_at >= datetime.now(), EventsORM.status == EventStatus.SCHEDULED
+            )
             filter_expressions.append(expiration_filter)
         try:
             query = select(EventsORM).where(*filter_expressions).offset(offset).limit(limit).order_by(order_expression)
@@ -86,7 +88,9 @@ class SQLAlchemyEventRepository(EventRepository):
     async def count(self, only_active: bool = True, **filters: Unpack[EventFilters]) -> int:
         filter_expressions = self.__get_filter_expression(EventsORM, filters)
         if only_active:
-            expiration_filter = EventsORM.expiration_at >= datetime.now()
+            expiration_filter = and_(
+                EventsORM.expiration_at >= datetime.now(), EventsORM.status == EventStatus.SCHEDULED
+            )
             filter_expressions.append(expiration_filter)
         try:
             query = select(func.count("*")).select_from(EventsORM).where(*filter_expressions)
